@@ -1,22 +1,26 @@
-# 💳 Danab Power - Payment Backend
+# 💳 Danab Power - Payment Backend (Users Only)
 
-Public-facing payment API for customer powerbank rentals.
+**Public-facing payment API for customer powerbank rentals.**
+
+This backend handles ONLY payment operations - no admin features.
 
 ## 🚀 Features
 
-- Process customer payments via Waafi API
-- Check battery availability from HeyCharge stations
-- Unlock batteries automatically after payment
-- Blacklist checking to prevent blocked users
-- Rate limiting to prevent abuse
-- Duplicate transaction prevention
+- ✅ Process customer payments via Waafi API
+- ✅ Check battery availability from HeyCharge stations
+- ✅ Unlock batteries automatically after payment
+- ✅ Blacklist checking to prevent blocked users
+- ✅ Rate limiting to prevent abuse
+- ✅ Duplicate transaction prevention
 
-## 📋 Endpoints
+## 📋 Endpoints (Payment Only)
 
 - `POST /api/pay/:stationCode` - Process payment and unlock battery
 - `GET /api/blacklist/check/:phoneNumber` - Check if phone is blacklisted
 - `GET /api/timezone` - Get server timezone info
 - `GET /` - Health check
+
+**Note**: All admin features (user management, stations, analytics) are in the separate AdminsBackend repository.
 
 ## 🔧 Environment Variables
 
@@ -66,6 +70,7 @@ Server runs on port 3000 (or PORT from environment).
 ## 📊 Database
 
 Uses Firebase Firestore:
+
 - `rentals` collection - Payment transactions
 - `blacklist` collection - Blocked phone numbers
 

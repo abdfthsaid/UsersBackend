@@ -10,7 +10,21 @@ import { Timestamp } from "firebase-admin/firestore";
 import rateLimit from "express-rate-limit";
 
 import db from "./config/firebase.js";
-import { isPhoneBlacklisted } from "./routes/blacklistRoutes.js";
+
+// 🚫 Check if phone number is blacklisted
+async function isPhoneBlacklisted(phoneNumber) {
+  try {
+    const snapshot = await db
+      .collection("blacklist")
+      .where("phoneNumber", "==", phoneNumber)
+      .limit(1)
+      .get();
+    return !snapshot.empty;
+  } catch (error) {
+    console.error("Error checking blacklist:", error);
+    return false;
+  }
+}
 
 // 🌍 ENV
 const {
@@ -123,21 +137,25 @@ app.get("/api/timezone", (req, res) => {
 });
 
 // 🔍 Check if phone number is blacklisted
-app.get("/api/blacklist/check/:phoneNumber", blacklistCheckLimiter, async (req, res) => {
-  const { phoneNumber } = req.params;
+app.get(
+  "/api/blacklist/check/:phoneNumber",
+  blacklistCheckLimiter,
+  async (req, res) => {
+    const { phoneNumber } = req.params;
 
-  if (!phoneNumber) {
-    return res.status(400).json({ error: "Phone number is required" });
-  }
+    if (!phoneNumber) {
+      return res.status(400).json({ error: "Phone number is required" });
+    }
 
-  try {
-    const blacklisted = await isPhoneBlacklisted(phoneNumber);
-    res.json({ blacklisted });
-  } catch (err) {
-    console.error("❌ Blacklist check error:", err);
-    res.status(500).json({ error: "Failed to check blacklist status" });
-  }
-});
+    try {
+      const blacklisted = await isPhoneBlacklisted(phoneNumber);
+      res.json({ blacklisted });
+    } catch (err) {
+      console.error("❌ Blacklist check error:", err);
+      res.status(500).json({ error: "Failed to check blacklist status" });
+    }
+  },
+);
 
 // 💳 Payment + rental logging + unlock battery
 app.post("/api/pay/:stationCode", paymentLimiter, async (req, res) => {
