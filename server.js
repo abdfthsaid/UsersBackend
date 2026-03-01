@@ -282,6 +282,8 @@ app.post("/api/pay/:stationCode", paymentLimiter, async (req, res) => {
       battery_id,
       slot_id,
       unlock: unlockRes,
+      waafiMessage: waafiRes.data.responseMsg || "Payment successful",
+      waafiResponse: waafiRes.data,
     });
   } catch (err) {
     console.error("❌ Payment error:", err);
