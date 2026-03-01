@@ -45,7 +45,10 @@ const {
 // 🛠️ App setup
 const app = express();
 
-// 🚫 Rate limiting for payment endpoint
+// � Trust proxy - required for Render deployment
+app.set("trust proxy", 1);
+
+// �🚫 Rate limiting for payment endpoint
 const paymentLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
   max: 10,
